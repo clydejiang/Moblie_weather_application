@@ -1,0 +1,36 @@
+Here are some instructions on how to install Andriod Studio and set up basic environment
+
+Requirements:
+OS	                64-bit Microsoft Windows 8											Latest 64-bit version of Windows
+RAM		8 GB RAM													16 GB RAM or more
+CPU		x86_64 CPU architecture; 2nd generation Intel Core or newer, or AMD CPU with support for a Windows Hypervisor Framework.	Latest Intel Core processor
+Disk space	8 GB (IDE and Android SDK and Emulator)									Solid state drive with 16 GB or more
+Screen resolution	1280 x 800												1920 x 1080
+
+
+Steps:
+
+1. Go to page https://developer.android.com/studio/install
+
+2. Click "Download Andriod Studio Giraffe"
+
+3. On the first installation page, Click "Next"
+
+4. Click "Next" on the second page.
+
+5. Select the installation location and click next
+
+6. Click "Install"
+
+7. Click "Finish" to finish the installation.
+
+
+Setting up environment:
+
+1. Click "Next button" on Welcome page
+
+2. Click "Standard" for standard installation
+
+3. Accept every license and click "next" 
+
+4. Finsh the set up.
