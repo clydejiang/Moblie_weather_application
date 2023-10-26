@@ -1,0 +1,37 @@
+To print "Hello World" in Android Studio, you'll typically be working within an Android app project. Here's a simple step-by-step guide to do this using a TextView in an Android app:
+
+Start a New Project:
+
+Open Android Studio.
+Click on "Start a new Android Studio project".
+Fill in your app's name, package name, and other details.
+Choose an appropriate API level (e.g., "API 21: Android 5.0 (Lollipop)") and click "Finish".
+Design the Layout:
+
+By default, Android Studio creates a layout file named activity_main.xml inside res/layout directory.
+This file should have a TextView with the text "Hello World". If not, you can add it:
+xml
+Copy code
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Hello World!"
+    android:layout_centerInParent="true"/>
+Run the App:
+
+Click on the green play button (or press Shift + F10) on the top of Android Studio.
+Choose an emulator or a connected Android device.
+Your app will start, and you should see "Hello World" displayed on the screen.
+However, if by "print", you mean logging to the console (Logcat) rather than displaying on the app's UI:
+
+Open the MainActivity.java (or the default activity created).
+
+Inside the onCreate method (or any appropriate method), add the following line:
+
+java
+Copy code
+Log.d("MainActivity", "Hello World");
+Now, when you run your app, you can see "Hello World" printed in the Logcat console of Android Studio. Ensure that the Logcat filter is set appropriately to view logs from your app.
+
+Note: Don't forget to import the android.util.Log package at the top of your Java file if you're using the Log.d() method.
+
