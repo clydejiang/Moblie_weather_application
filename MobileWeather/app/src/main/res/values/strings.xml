@@ -1,6 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Mobile Weather</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+	<!-- iphone_14___15_pro___2 strings -->
+
+	<string name="app_name">Page 1</string>
+	<string name="ek_img_content">ExportKit Image</string>
+	<string name="home_string">Home</string>
+	<string name="hourly_string">Hourly</string>
+	<string name="daily_string">Daily</string>
+	<string name="_100__string">100%</string>
+	<string name="humidity_string">Humidity</string>
+	<string name="wind_string">Wind</string>
+	<string name="_23km_h_string">23km/h</string>
+	<string name="feels_like_ek2_string">Feels Like</string>
+	<string name="_0_string">0</string>
+	<string name="_5_string">5</string>
+	<string name="_10_49_string">10:49</string>
+	<string name="sun_8_string">SUN 8</string>
+	<string name="greater_sudbury_string">Greater Sudbury</string>
 </resources>
