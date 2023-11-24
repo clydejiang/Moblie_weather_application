@@ -5,7 +5,7 @@ package com.example.ea;
 	 *	(Alt+Shift+Ctrl+I).
 	 *
 	 *	@desc 		
-	 *	@file 		iphone_14___15_pro___2
+	 *	@file 		homepage
 	 *	@date 		Wednesday 01st of November 2023 11:47:19 PM
 	 *	@title 		Page 1
 	 *	@author 	
@@ -25,10 +25,19 @@ import android.widget.SearchView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
 
-public class iphone_14___15_pro___2_activity extends Activity {
 
-	
+
+public class homepage_activity extends Activity {
+
 	private View _bg__iphone_14___15_pro___2_ek2;
 	private View _bg__frame_1_ek1;
 	private ImageView _3qoyei_1;
@@ -88,7 +97,7 @@ public class iphone_14___15_pro___2_activity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.iphone_14___15_pro___2);
+		setContentView(R.layout.homepage);
 
 		
 		_bg__iphone_14___15_pro___2_ek2 = (View) findViewById(R.id._bg__iphone_14___15_pro___2_ek2);
@@ -120,11 +129,9 @@ public class iphone_14___15_pro___2_activity extends Activity {
 		feels_like_ek2 = (TextView) findViewById(R.id.feels_like_ek2);
 		vector_ek7 = (ImageView) findViewById(R.id.vector_ek7);
 		_bg______icon__celsius__ek1 = (View) findViewById(R.id._bg______icon__celsius__ek1);
-		vector_ek8 = (ImageView) findViewById(R.id.vector_ek8);
 		_0 = (TextView) findViewById(R.id._0);
 		_bg__onbackground_ek1 = (View) findViewById(R.id._bg__onbackground_ek1);
 		_bg______icon__celsius__ek3 = (View) findViewById(R.id._bg______icon__celsius__ek3);
-		vector_ek9 = (ImageView) findViewById(R.id.vector_ek9);
 		_5 = (TextView) findViewById(R.id._5);
 		_bg______icon__rain_mix__ek1 = (View) findViewById(R.id._bg______icon__rain_mix__ek1);
 		vector_ek10 = (ImageView) findViewById(R.id.vector_ek10);
@@ -137,21 +144,23 @@ public class iphone_14___15_pro___2_activity extends Activity {
 		vector_ek13 = (ImageView) findViewById(R.id.vector_ek13);
 		_bg______icon__signal__ek1 = (View) findViewById(R.id._bg______icon__signal__ek1);
 		vector_ek14 = (ImageView) findViewById(R.id.vector_ek14);
-		sun_8 = (TextView) findViewById(R.id.sun_8);
+		TextView sun8TextView = (TextView) findViewById(R.id.sun_8);
+		sun8TextView.setText(getCurrentDate());
 		SearchView searchView = (SearchView) findViewById(R.id.search_view);
 		searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 			@Override
 			public boolean onQueryTextSubmit(String query) {
-				// Handle search query submission here
-				// TODO: Add search logic
-				return true; // Return true if the query has been handled
+				InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+				if (imm != null) {
+					imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
+				}
+				fetchWeatherForCity(query);
+				return true;
 			}
 
 			@Override
 			public boolean onQueryTextChange(String newText) {
-				// Handle search query change here
-				// TODO: Optionally handle text change for suggestions
-				return true; // Return true if the newText has been handled
+				return true;
 			}
 		});
 		rectangle_4 = (View) findViewById(R.id.rectangle_4);
@@ -160,10 +169,50 @@ public class iphone_14___15_pro___2_activity extends Activity {
 		ellipse_2 = (View) findViewById(R.id.ellipse_2);
 		rectangle_5 = (View) findViewById(R.id.rectangle_5);
 	
-		
-		//custom code goes here
-	
 	}
+	private String getCurrentDate() {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("EEE d", Locale.getDefault());
+		return dateFormat.format(Calendar.getInstance().getTime());
+	}
+
+	private void fetchWeatherForCity(String cityName) {
+		String apiKey = "e81f5507de6fd4541cfb49f8ea828492"; // Replace with your actual API key
+		RetrofitClient.getWeatherService().getWeatherByCityName(cityName, apiKey).enqueue(new Callback<WeatherData>() {
+			@Override
+			public void onResponse(Call<WeatherData> call, Response<WeatherData> response) {
+				if (response.isSuccessful() && response.body() != null) {
+					updateWeatherUI(response.body());
+				} else {
+					String errorMessage = "Failed to fetch data: ";
+
+				}
+			}
+
+			@Override
+			public void onFailure(Call<WeatherData> call, Throwable t) {
+				String errorMessage = "Network error: ";
+
+			}
+		});
+	}
+
+	private void updateWeatherUI(WeatherData weatherData) {
+		// Assuming you have TextViews with these IDs in your layout
+		TextView currentTempTextView = findViewById(R.id._5);
+		TextView feelsLikeTextView = findViewById(R.id._0);
+		TextView windSpeedTextView = findViewById(R.id._23km_h);
+		TextView humidityTextView = findViewById(R.id._100_);
+		Log.d("WeatherDebug", "Feels like temperature: " + weatherData.getMain().getFeelsLike());
+		// Update the TextViews with weather data
+		// Example: Converting Kelvin to Celsius for temperature display
+		double feelsLikeTempInCelsius = weatherData.getMain().getFeelsLike() - 273.15;
+		currentTempTextView.setText(String.format(Locale.getDefault(), "%.0f°C", weatherData.getMain().getTemp() - 273.15));
+		feelsLikeTextView.setText(String.format(Locale.getDefault(), "%.0f°C", weatherData.getMain().getFeelsLike() -273.15));
+		windSpeedTextView.setText(String.format(Locale.getDefault(), "%.1f", weatherData.getWind().getSpeed() * 3.6)); // Convert m/s to km/h
+		humidityTextView.setText(String.format(Locale.getDefault(), "%d%%", weatherData.getMain().getHumidity()));
+	}
+
+
 }
 	
 	
