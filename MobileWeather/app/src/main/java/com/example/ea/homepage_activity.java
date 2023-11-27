@@ -19,9 +19,9 @@ package com.example.ea;
 
 import android.app.Activity;
 import android.os.Bundle;
-
+import android.Manifest;
 import android.widget.SearchView;
-
+import android.content.pm.PackageManager;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,11 +33,16 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
-
-
-
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
+import androidx.core.app.ActivityCompat;
+import androidx.annotation.NonNull;
+import android.app.Activity;
 public class homepage_activity extends Activity {
-
+	private LocationManager locationManager;
+	private LocationListener locationListener;
 	private View _bg__iphone_14___15_pro___2_ek2;
 	private View _bg__frame_1_ek1;
 	private ImageView _3qoyei_1;
@@ -92,14 +97,29 @@ public class homepage_activity extends Activity {
 	private ImageView polygon_1;
 	private View ellipse_2;
 	private View rectangle_5;
-
+	@Override
+	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+		if (requestCode == 101 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+			fetchLocation();
+		} else {
+			// Handle the case where the user denies the permission
+		}
+	}
+	@Override
+	protected void onPause() {
+		super.onPause();
+		if (locationManager != null) {
+			locationManager.removeUpdates(locationListener);
+		}
+	}
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.homepage);
-
-		
+		locationManager = (LocationManager) getSystemService(this.LOCATION_SERVICE);
+		fetchLocation();
 		_bg__iphone_14___15_pro___2_ek2 = (View) findViewById(R.id._bg__iphone_14___15_pro___2_ek2);
 		_bg__frame_1_ek1 = (View) findViewById(R.id._bg__frame_1_ek1);
 		_3qoyei_1 = (ImageView) findViewById(R.id._3qoyei_1);
@@ -136,6 +156,13 @@ public class homepage_activity extends Activity {
 		_bg______icon__rain_mix__ek1 = (View) findViewById(R.id._bg______icon__rain_mix__ek1);
 		vector_ek10 = (ImageView) findViewById(R.id.vector_ek10);
 		vector_ek11 = (ImageView) findViewById(R.id.vector_ek11);
+		ImageView locationUpdateButton = findViewById(R.id.vector_ek11);
+		locationUpdateButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				fetchLocation();
+			}
+		});
 		_10_49 = (TextView) findViewById(R.id._10_49);
 		_bg__right_system_icon_ek1 = (View) findViewById(R.id._bg__right_system_icon_ek1);
 		_bg______icon__battery_full__ek1 = (View) findViewById(R.id._bg______icon__battery_full__ek1);
@@ -163,11 +190,10 @@ public class homepage_activity extends Activity {
 				return true;
 			}
 		});
-		rectangle_4 = (View) findViewById(R.id.rectangle_4);
-		vector_ek15 = (ImageView) findViewById(R.id.vector_ek15);
 		polygon_1 = (ImageView) findViewById(R.id.polygon_1);
 		ellipse_2 = (View) findViewById(R.id.ellipse_2);
 		rectangle_5 = (View) findViewById(R.id.rectangle_5);
+
 	
 	}
 	private String getCurrentDate() {
@@ -210,6 +236,45 @@ public class homepage_activity extends Activity {
 		feelsLikeTextView.setText(String.format(Locale.getDefault(), "%.0f°C", weatherData.getMain().getFeelsLike() -273.15));
 		windSpeedTextView.setText(String.format(Locale.getDefault(), "%.1f", weatherData.getWind().getSpeed() * 3.6)); // Convert m/s to km/h
 		humidityTextView.setText(String.format(Locale.getDefault(), "%d%%", weatherData.getMain().getHumidity()));
+	}
+
+	private void fetchLocation() {
+		if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 101);
+			return;
+		}
+
+		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new LocationListener() {
+			@Override
+			public void onLocationChanged(Location location) {
+				double latitude = location.getLatitude();
+				double longitude = location.getLongitude();
+				Log.d("LocationUpdate", "Latitude: " + latitude + ", Longitude: " + longitude);
+				RetrofitClient.getWeatherService().getWeatherByCoordinates(latitude, longitude, "e81f5507de6fd4541cfb49f8ea828492").enqueue(new Callback<WeatherData>() {
+					@Override
+					public void onResponse(Call<WeatherData> call, Response<WeatherData> response) {
+						if (response.isSuccessful()) {
+							WeatherData weatherData = response.body();
+							updateWeatherUI(weatherData);
+						}
+					}
+
+					@Override
+					public void onFailure(Call<WeatherData> call, Throwable t) {
+						String errorMessage = "Network error: ";
+					}
+				});
+			}
+
+			@Override
+			public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+			@Override
+			public void onProviderEnabled(String provider) {}
+
+			@Override
+			public void onProviderDisabled(String provider) {}
+		});
 	}
 
 

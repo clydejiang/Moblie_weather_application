@@ -446,9 +446,9 @@
 						android:src="@drawable/vector_ek11"
 						android:contentDescription="vector_ek11"
 						 android:layout_marginStart="356dp"
-						android:layout_marginTop="67dp"
-						android:layout_width="25dp"
-						android:layout_height="22.22dp" />
+						android:layout_marginTop="55dp"
+						android:layout_width="40dp"
+						android:layout_height="40dp" />
 
 					<TextView android:id="@+id/_10_49"
 						android:textSize="25sp"
@@ -572,20 +572,9 @@
 						android:queryHint="Search here"
 						app:searchIcon="@null"/>
 
-					<View   android:id="@+id/rectangle_4"
-						android:background="@drawable/rectangle_4_shape"
-						 android:layout_marginStart="303dp"
-						android:layout_marginTop="60dp"
-						android:layout_width="39dp"
-						android:layout_height="39dp" />
 
-					<ImageView android:id="@+id/vector_ek15"
-						android:src="@drawable/vector_ek15"
-						android:contentDescription="vector_ek15"
-						 android:layout_marginStart="312dp"
-						android:layout_marginTop="69dp"
-						android:layout_width="22.13dp"
-						android:layout_height="22.13dp" />
+
+
 
 					<ImageView android:id="@+id/polygon_1"
 						android:src="@drawable/polygon_1"
