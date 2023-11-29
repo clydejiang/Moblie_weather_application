@@ -93,60 +93,6 @@
 							android:layout_width="393dp"
 							android:layout_height="61dp" />
 
-						<TextView android:id="@+id/home"
-							android:textSize="16sp"
-							android:textColor="@color/_bg__iphone_14___15_pro___2_ek2_color"
-							android:layout_marginLeft="174dp"
-							android:layout_marginTop="36dp"
-							android:layout_width="56.6dp"
-							android:layout_height="28.6dp"
-							android:text="@string/home_string"
-							 />
-
-						<ImageView android:id="@+id/vector"
-							android:src="@drawable/vector"
-							android:contentDescription="vector"
-							 android:layout_marginStart="173dp"
-							android:layout_marginTop="4dp"
-							android:layout_width="43dp"
-							android:layout_height="34dp" />
-
-						<TextView android:id="@+id/hourly"
-							android:textSize="16sp"
-							android:textColor="@color/_bg__iphone_14___15_pro___2_ek2_color"
-							android:layout_marginLeft="43dp"
-							android:layout_marginTop="36dp"
-							android:layout_width="62.6dp"
-							android:layout_height="28.6dp"
-							android:text="@string/hourly_string"
-							 />
-
-						<ImageView android:id="@+id/vector_ek1"
-							android:src="@drawable/vector_ek1"
-							android:contentDescription="vector_ek1"
-							 android:layout_marginStart="49dp"
-							android:layout_marginTop="4dp"
-							android:layout_width="36dp"
-							android:layout_height="36dp" />
-
-						<ImageView android:id="@+id/vector_ek2"
-							android:src="@drawable/vector_ek2"
-							android:contentDescription="vector_ek2"
-							 android:layout_marginStart="306dp"
-							android:layout_marginTop="4dp"
-							android:layout_width="34dp"
-							android:layout_height="34dp" />
-
-						<TextView android:id="@+id/daily"
-							android:textSize="16sp"
-							android:textColor="@color/_bg__iphone_14___15_pro___2_ek2_color"
-							android:layout_marginLeft="305dp"
-							android:layout_marginTop="36dp"
-							android:layout_width="51.6dp"
-							android:layout_height="28.6dp"
-							android:text="@string/daily_string"
-							 />
-
 					</RelativeLayout>
 
 
@@ -362,7 +308,7 @@
 									android:textColor="@color/_bg__iphone_14___15_pro___2_ek2_color"
 									android:singleLine="true"
 									android:gravity="center"
-									android:text="0ºC" />
+									android:text="100" />
 
 							</RelativeLayout>
 
@@ -540,13 +486,14 @@
 								android:layout_width="12dp"
 								android:layout_height="13.71dp" />
 
-							<ImageView android:id="@+id/vector_ek14"
-								android:src="@drawable/vector_ek14"
-								android:contentDescription="vector_ek14"
-								 android:layout_marginStart="0dp"
-								android:layout_marginTop="0dp"
+							<ImageView
+								android:id="@+id/vector_ek14"
 								android:layout_width="12dp"
-								android:layout_height="13.71dp" />
+								android:layout_height="13.71dp"
+								android:layout_marginStart="0dp"
+								android:layout_marginTop="0dp"
+								android:contentDescription="vector_ek14"
+								android:src="@drawable/vector_ek14" />
 
 						</RelativeLayout>
 

@@ -41,6 +41,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.annotation.NonNull;
 import android.app.Activity;
 public class homepage_activity extends Activity {
+	private static final String TAG = "homepage_activity";
 	private LocationManager locationManager;
 	private LocationListener locationListener;
 	private View _bg__iphone_14___15_pro___2_ek2;
@@ -97,6 +98,9 @@ public class homepage_activity extends Activity {
 	private ImageView polygon_1;
 	private View ellipse_2;
 	private View rectangle_5;
+
+	private boolean isManualSearch = false;
+
 	@Override
 	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -109,16 +113,28 @@ public class homepage_activity extends Activity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		if (locationManager != null) {
-			locationManager.removeUpdates(locationListener);
-		}
+		locationManager.removeUpdates(this.locationListener);
+		Log.d("Wea", "Feels like temperature: " );
 	}
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.homepage);
-		locationManager = (LocationManager) getSystemService(this.LOCATION_SERVICE);
+		locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+		locationListener = new LocationListener() {
+			@Override
+			public void onLocationChanged(Location location) {
+				Log.d(TAG, "Location changed: " + location.toString());
+				if (isManualSearch) {
+					Log.d(TAG, "Ignoring location update due to manual search");
+					return;
+				}
+			}
+
+			// Other methods...
+		};
+		startLocationUpdates();
 		fetchLocation();
 		_bg__iphone_14___15_pro___2_ek2 = (View) findViewById(R.id._bg__iphone_14___15_pro___2_ek2);
 		_bg__frame_1_ek1 = (View) findViewById(R.id._bg__frame_1_ek1);
@@ -126,12 +142,6 @@ public class homepage_activity extends Activity {
 		rectangle_3 = (View) findViewById(R.id.rectangle_3);
 		_bg__group_1_ek1 = (View) findViewById(R.id._bg__group_1_ek1);
 		rectangle_1 = (View) findViewById(R.id.rectangle_1);
-		home = (TextView) findViewById(R.id.home);
-		vector = (ImageView) findViewById(R.id.vector);
-		hourly = (TextView) findViewById(R.id.hourly);
-		vector_ek1 = (ImageView) findViewById(R.id.vector_ek1);
-		vector_ek2 = (ImageView) findViewById(R.id.vector_ek2);
-		daily = (TextView) findViewById(R.id.daily);
 		_bg__onrec_ek1 = (View) findViewById(R.id._bg__onrec_ek1);
 		_bg______icon__humidity__ek1 = (View) findViewById(R.id._bg______icon__humidity__ek1);
 		vector_ek3 = (ImageView) findViewById(R.id.vector_ek3);
@@ -160,9 +170,14 @@ public class homepage_activity extends Activity {
 		locationUpdateButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				// Reset the manual search flag
+				isManualSearch = false;
+
+				// Fetch current location's weather
 				fetchLocation();
 			}
 		});
+
 		_10_49 = (TextView) findViewById(R.id._10_49);
 		_bg__right_system_icon_ek1 = (View) findViewById(R.id._bg__right_system_icon_ek1);
 		_bg______icon__battery_full__ek1 = (View) findViewById(R.id._bg______icon__battery_full__ek1);
@@ -181,6 +196,7 @@ public class homepage_activity extends Activity {
 				if (imm != null) {
 					imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
 				}
+				isManualSearch = true;
 				fetchWeatherForCity(query);
 				return true;
 			}
@@ -196,20 +212,24 @@ public class homepage_activity extends Activity {
 
 	
 	}
+
 	private String getCurrentDate() {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("EEE d", Locale.getDefault());
 		return dateFormat.format(Calendar.getInstance().getTime());
 	}
 
 	private void fetchWeatherForCity(String cityName) {
-		String apiKey = "e81f5507de6fd4541cfb49f8ea828492"; // Replace with your actual API key
+		Log.d(TAG, "Fetching weather for city: " + cityName);
+		String apiKey = "e81f5507de6fd4541cfb49f8ea828492";
 		RetrofitClient.getWeatherService().getWeatherByCityName(cityName, apiKey).enqueue(new Callback<WeatherData>() {
 			@Override
 			public void onResponse(Call<WeatherData> call, Response<WeatherData> response) {
 				if (response.isSuccessful() && response.body() != null) {
+					Log.d("WeatherAPI", "Response: " + response.body().toString());
 					updateWeatherUI(response.body());
 				} else {
 					String errorMessage = "Failed to fetch data: ";
+					Log.d("WeatherAPI", "Unsuccessful response");
 
 				}
 			}
@@ -217,12 +237,46 @@ public class homepage_activity extends Activity {
 			@Override
 			public void onFailure(Call<WeatherData> call, Throwable t) {
 				String errorMessage = "Network error: ";
+				Log.d("WeatherAPI", "Failure: " + t.getMessage());
+				Log.d("WeatherError", "Error Message: " + errorMessage);
 
 			}
 		});
+
+		stopLocationUpdates();
+		isManualSearch = true;
+
+	}
+	private void handleLocationUpdate(Location location) {
+		// Fetch weather data for the current location
+		// ...
+	}
+	private void startLocationUpdates() {
+		Log.d(TAG, "Starting location updates");
+		if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 101);
+			return;
+		}
+
+		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000000, 0, locationListener);
+	}
+	private void stopLocationUpdates() {
+		Log.d(TAG, "Stopping location updates");
+		if (locationManager != null) {
+			locationManager.removeUpdates(locationListener);
+		}
 	}
 
+
+
+
 	private void updateWeatherUI(WeatherData weatherData) {
+		Log.d("WeatherUI", "Temperature (Kelvin): " + weatherData.getMain().getTemp());
+		Log.d("WeatherUI", "Feels Like (Kelvin): " + weatherData.getMain().getFeelsLike());
+		double tempInCelsius = weatherData.getMain().getTemp() - 273.15;
+		double feelsLikeInCelsius = weatherData.getMain().getFeelsLike() - 273.15;
+		Log.d("WeatherUI", "Temperature (Celsius): " + tempInCelsius);
+		Log.d("WeatherUI", "Feels Like (Celsius): " + feelsLikeInCelsius);
 		// Assuming you have TextViews with these IDs in your layout
 		TextView currentTempTextView = findViewById(R.id._5);
 		TextView feelsLikeTextView = findViewById(R.id._0);
@@ -244,7 +298,7 @@ public class homepage_activity extends Activity {
 			return;
 		}
 
-		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new LocationListener() {
+		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000000, 0, new LocationListener() {
 			@Override
 			public void onLocationChanged(Location location) {
 				double latitude = location.getLatitude();
@@ -275,7 +329,9 @@ public class homepage_activity extends Activity {
 			@Override
 			public void onProviderDisabled(String provider) {}
 		});
+
 	}
+
 
 
 }

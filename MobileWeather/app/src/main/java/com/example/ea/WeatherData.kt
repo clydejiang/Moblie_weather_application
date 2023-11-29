@@ -1,4 +1,5 @@
 package com.example.ea
+import com.google.gson.annotations.SerializedName
 
 data class WeatherData(
     val coord: Coord,
@@ -30,6 +31,7 @@ data class Weather(
 
 data class Main(
     val temp: Double,
+    @SerializedName("feels_like")
     val feelsLike: Double,
     val tempMin: Double,
     val tempMax: Double,
