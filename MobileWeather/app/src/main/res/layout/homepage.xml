@@ -140,7 +140,7 @@
 								android:layout_marginTop="49dp"
 								android:layout_width="85dp"
 								android:layout_height="54dp"
-								android:text="@string/_100__string"
+								android:text=""
 								 />
 
 							<TextView android:id="@+id/humidity"
@@ -195,7 +195,7 @@
 								android:layout_marginTop="41dp"
 								android:layout_width="98dp"
 								android:layout_height="54dp"
-								android:text="23"
+								android:text=""
 								 />
 
 
@@ -308,7 +308,7 @@
 									android:textColor="@color/_bg__iphone_14___15_pro___2_ek2_color"
 									android:singleLine="true"
 									android:gravity="center"
-									android:text="100" />
+									android:text="" />
 
 							</RelativeLayout>
 
@@ -356,7 +356,7 @@
 								android:layout_marginTop="0dp"
 								android:textSize="96sp"
 								android:textColor="@color/_bg__iphone_14___15_pro___2_ek2_color"
-								android:text="-25ºC" />
+								android:text="" />
 
 						</RelativeLayout>
 
@@ -396,15 +396,6 @@
 						android:layout_width="40dp"
 						android:layout_height="40dp" />
 
-					<TextView android:id="@+id/_10_49"
-						android:textSize="25sp"
-						android:textColor="@color/_bg__iphone_14___15_pro___2_ek2_color"
-						android:layout_marginLeft="48dp"
-						android:layout_marginTop="15dp"
-						android:layout_width="77.5dp"
-						android:layout_height="44.5dp"
-						android:text="@string/_10_49_string"
-						 />
 
 
 					<RelativeLayout android:id="@+id/right_system_icon"
@@ -436,13 +427,7 @@
 								android:layout_width="18.81dp"
 								android:layout_height="14.12dp" />
 
-							<ImageView android:id="@+id/vector_ek12"
-								android:src="@drawable/vector_ek12"
-								android:contentDescription="vector_ek12"
-								 android:layout_marginStart="0dp"
-								android:layout_marginTop="0dp"
-								android:layout_width="18.81dp"
-								android:layout_height="14.12dp" />
+
 
 						</RelativeLayout>
 
@@ -461,13 +446,7 @@
 								android:layout_width="13.18dp"
 								android:layout_height="14dp" />
 
-							<ImageView android:id="@+id/vector_ek13"
-								android:src="@drawable/vector_ek13"
-								android:contentDescription="vector_ek13"
-								 android:layout_marginStart="0dp"
-								android:layout_marginTop="0dp"
-								android:layout_width="13.18dp"
-								android:layout_height="14dp" />
+
 
 						</RelativeLayout>
 
@@ -486,14 +465,7 @@
 								android:layout_width="12dp"
 								android:layout_height="13.71dp" />
 
-							<ImageView
-								android:id="@+id/vector_ek14"
-								android:layout_width="12dp"
-								android:layout_height="13.71dp"
-								android:layout_marginStart="0dp"
-								android:layout_marginTop="0dp"
-								android:contentDescription="vector_ek14"
-								android:src="@drawable/vector_ek14" />
+
 
 						</RelativeLayout>
 
@@ -504,9 +476,11 @@
 						android:textColor="@color/_bg__iphone_14___15_pro___2_ek2_color"
 						android:layout_marginLeft="80dp"
 						android:layout_marginTop="119dp"
-						android:layout_width="244.2dp"
-						android:layout_height="129.2dp"
-						android:text="@string/sun_8_string"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:singleLine="true"
+						android:ellipsize="end"
+						android:text=""
 						 />
 
 					<SearchView  android:id="@+id/search_view"

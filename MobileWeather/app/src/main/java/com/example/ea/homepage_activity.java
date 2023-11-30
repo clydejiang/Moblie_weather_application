@@ -36,10 +36,20 @@ import android.view.inputmethod.InputMethodManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Bundle;
 import androidx.core.app.ActivityCompat;
 import androidx.annotation.NonNull;
-import android.app.Activity;
+import android.widget.Toast;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.os.Build;
+import androidx.core.app.NotificationCompat;
 public class homepage_activity extends Activity {
 	private static final String TAG = "homepage_activity";
 	private LocationManager locationManager;
@@ -98,6 +108,7 @@ public class homepage_activity extends Activity {
 	private ImageView polygon_1;
 	private View ellipse_2;
 	private View rectangle_5;
+	private NetworkChangeReceiver networkChangeReceiver;
 
 	private boolean isManualSearch = false;
 
@@ -115,6 +126,7 @@ public class homepage_activity extends Activity {
 		super.onPause();
 		locationManager.removeUpdates(this.locationListener);
 		Log.d("Wea", "Feels like temperature: " );
+		unregisterReceiver(networkChangeReceiver);
 	}
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -130,6 +142,10 @@ public class homepage_activity extends Activity {
 					Log.d(TAG, "Ignoring location update due to manual search");
 					return;
 				}
+			}
+			@Override
+			public void onProviderDisabled(String provider) {
+				Toast.makeText(homepage_activity.this, "GPS provider disabled", Toast.LENGTH_SHORT).show();
 			}
 
 			// Other methods...
@@ -167,25 +183,15 @@ public class homepage_activity extends Activity {
 		vector_ek10 = (ImageView) findViewById(R.id.vector_ek10);
 		vector_ek11 = (ImageView) findViewById(R.id.vector_ek11);
 		ImageView locationUpdateButton = findViewById(R.id.vector_ek11);
-		locationUpdateButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// Reset the manual search flag
-				isManualSearch = false;
 
-				// Fetch current location's weather
-				fetchLocation();
-			}
-		});
 
-		_10_49 = (TextView) findViewById(R.id._10_49);
 		_bg__right_system_icon_ek1 = (View) findViewById(R.id._bg__right_system_icon_ek1);
 		_bg______icon__battery_full__ek1 = (View) findViewById(R.id._bg______icon__battery_full__ek1);
-		vector_ek12 = (ImageView) findViewById(R.id.vector_ek12);
+
 		_bg______icon__wifi__ek1 = (View) findViewById(R.id._bg______icon__wifi__ek1);
-		vector_ek13 = (ImageView) findViewById(R.id.vector_ek13);
+
 		_bg______icon__signal__ek1 = (View) findViewById(R.id._bg______icon__signal__ek1);
-		vector_ek14 = (ImageView) findViewById(R.id.vector_ek14);
+		
 		TextView sun8TextView = (TextView) findViewById(R.id.sun_8);
 		sun8TextView.setText(getCurrentDate());
 		SearchView searchView = (SearchView) findViewById(R.id.search_view);
@@ -203,12 +209,29 @@ public class homepage_activity extends Activity {
 
 			@Override
 			public boolean onQueryTextChange(String newText) {
+				if (newText.length() > 15) {
+					Toast.makeText(homepage_activity.this, "The name is incorrect", Toast.LENGTH_SHORT).show();
+					searchView.setQuery("", false);
+					return false;
+				}
+				// Continue with other changes if needed
 				return true;
+			}
+		});
+		locationUpdateButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// Reset the manual search flag
+				isManualSearch = false;
+				searchView.setQuery("", false);
+				// Fetch current location's weather
+				fetchLocation();
 			}
 		});
 		polygon_1 = (ImageView) findViewById(R.id.polygon_1);
 		ellipse_2 = (View) findViewById(R.id.ellipse_2);
 		rectangle_5 = (View) findViewById(R.id.rectangle_5);
+		networkChangeReceiver = new NetworkChangeReceiver();
 
 	
 	}
@@ -230,6 +253,7 @@ public class homepage_activity extends Activity {
 				} else {
 					String errorMessage = "Failed to fetch data: ";
 					Log.d("WeatherAPI", "Unsuccessful response");
+					Toast.makeText(homepage_activity.this, "Invalid city name, please try again.", Toast.LENGTH_SHORT).show();
 
 				}
 			}
@@ -239,6 +263,7 @@ public class homepage_activity extends Activity {
 				String errorMessage = "Network error: ";
 				Log.d("WeatherAPI", "Failure: " + t.getMessage());
 				Log.d("WeatherError", "Error Message: " + errorMessage);
+				Toast.makeText(homepage_activity.this, "Error fetching weather data", Toast.LENGTH_SHORT).show();
 
 			}
 		});
@@ -250,6 +275,13 @@ public class homepage_activity extends Activity {
 	private void handleLocationUpdate(Location location) {
 		// Fetch weather data for the current location
 		// ...
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+		registerReceiver(networkChangeReceiver, filter);
 	}
 	private void startLocationUpdates() {
 		Log.d(TAG, "Starting location updates");
@@ -331,6 +363,22 @@ public class homepage_activity extends Activity {
 		});
 
 	}
+
+	private class NetworkChangeReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+			NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+			boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+			if (!isConnected) {
+				Toast.makeText(context, "Internet connection lost", Toast.LENGTH_SHORT).show();
+			}
+		}
+	}
+
+
+
+
 
 
 
